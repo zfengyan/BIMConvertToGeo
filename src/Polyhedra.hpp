@@ -189,7 +189,17 @@ public:
         // compute convex hull of non-collinear points
         CGAL::convex_hull_3(vertices.begin(), vertices.end(), poly);
         std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << '\n';
-        if (poly.is_closed())std::cout << "This polyhedron is closed. " << '\n';
+        if (poly.is_closed()) {
+            std::cout << "This polyhedron is closed. " << '\n';
+
+            // output the convexhull
+            std::string outputname = "/32.off";
+            std::string outputfile = path + outputname;
+            std::ofstream os(outputfile);
+            os << poly;
+            os.close();
+            std::cout << "output convex hull as: " << outputfile << '\n';
+        }
 
     }
 
