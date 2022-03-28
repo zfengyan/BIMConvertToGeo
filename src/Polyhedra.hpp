@@ -6,6 +6,7 @@
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 #include <CGAL/Nef_polyhedron_3.h>
+#include <CGAL/convex_hull_3.h>
 
 typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
 typedef Kernel::Point_3 Point;
@@ -113,6 +114,83 @@ public:
         }
         std::cout << "construct " << count << " polyhedrons " << "for " << f.shells.size() << " shells" << '\n';
         std::cout << "construct " << nef.nef_polyhedron_list.size() << " nef polyhedrons " << '\n';
+    }
+
+
+    /*
+    * compute convex hull for shells which don't work for polyhedron builder
+    */
+    static void build_convexhull(std::string& fname) {
+        std::string path = INTER_PATH;
+        std::string filename = path + fname;
+        std::cout << "-- loading obj shell: " << filename << " to build its convexhull" << '\n';
+
+        // read obj
+        std::string line;
+        std::ifstream file(filename);
+        if (!file.is_open()) { std::cerr << "file open failed! " << '\n'; }
+     
+        std::vector<double> coordinates; // store xyz coordinates of each vertex line
+        std::vector<Point> vertices;
+
+        // process each line in the obj file
+        while (std::getline(file, line)) {
+            if (line.empty()) {
+                continue; // skip empty lines:
+            }
+
+            // use markers below to mark the type of each line
+            bool v_flag(false); // entitled "v"
+            bool f_flag(false); // entitled "f"
+
+            // help to process elements in each line
+            std::stringstream ss(line);
+            std::string field; // element in each line
+            std::string::size_type sz; // NOT std::size_t, size of std::string
+
+            // for each element(field, type: string) in one line
+            while (std::getline(ss, field, ' ')) {
+
+                // get the type of current line
+                if (field == "f") {
+                    f_flag = true;
+                    continue;
+                }
+                else if (field == "v") {
+                    v_flag = true;
+                    continue;
+                }
+
+                // process the current line
+                if (v_flag) {
+                    // process xyz coordinates
+                    coordinates.emplace_back(std::stod(field, &sz));
+                }
+
+            } // end while: process each element in one line
+
+            // process each vertex (if it's a vertex line)
+            if (!coordinates.empty() && coordinates.size() == 3) {
+                vertices.emplace_back(
+                    Point(
+                        coordinates[0], // x
+                        coordinates[1], // y
+                        coordinates[2]) // z
+                );
+            }
+            coordinates.clear();
+
+        } // end while: each line in the file
+
+        // use Point_3 points in vertices to compute the convex hull
+        
+        // define polyhedron to hold convex hull
+        Polyhedron poly;
+        // compute convex hull of non-collinear points
+        CGAL::convex_hull_3(vertices.begin(), vertices.end(), poly);
+        std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << '\n';
+        if (poly.is_closed())std::cout << "This polyhedron is closed. " << '\n';
+
     }
 
 

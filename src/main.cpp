@@ -43,8 +43,9 @@ int main()
 	// PreparePolyhedron::output_each_shell(f); // uncomment this to output each shell
 
 	std::cout << '\n';
-	std::string obj_name = "/1.obj";
-	Construct_Nef_Polyhedron::construct_polyhedron_each_shell_obj(obj_name);
+	std::string obj_name = "/32.obj";
+	// Construct_Nef_Polyhedron::construct_polyhedron_each_shell_obj(obj_name);
+	Construct_Nef_Polyhedron::build_convexhull(obj_name);
 	
 	// Nef nef;
 	// Construct_Nef_Polyhedron::construct_nef_polyhedron(f, nef);
