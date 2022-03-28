@@ -377,7 +377,7 @@ public:
 		std::cout << "-- repeated vertcies check: " << '\n';
 		std::cout<< "Epsilon threshold: " << Epsilon << '\n';
 		
-		std::string path = OUTPUT_PATH;
+		std::string path = INTER_PATH;
 		std::string filename = path + fname;
 
 		std::ofstream myfile;
@@ -470,7 +470,7 @@ public:
 		}
 
 		// write faces containing repeated vertices
-		std::string path = OUTPUT_PATH;
+		std::string path = INTER_PATH;
 		std::string filename = path + fname;
 		std::ofstream myfile;
 		myfile.open(filename);
@@ -545,7 +545,7 @@ public:
 		}
 
 		// write new vertices
-		std::string path = OUTPUT_PATH;
+		std::string path = INTER_PATH;
 		std::string filename = path + fname;
 		std::ofstream myfile;
 		myfile.open(filename);
@@ -609,7 +609,7 @@ public:
 		}
 
 		// write new faces 
-		std::string path = OUTPUT_PATH;
+		std::string path = INTER_PATH;
 		std::string filename = path + fname;
 		std::ofstream myfile;
 		myfile.open(filename);
@@ -639,7 +639,7 @@ public:
 	* output stored elemetns to verify if it's correct
 	*/
 	static void output_obj(std::string& fname, OBJFile& f) {
-		std::string path = OUTPUT_PATH;
+		std::string path = INTER_PATH;
 		std::string filename = path + fname;
 		std::cout << "-- output obj file: " << '\n';
 
@@ -768,7 +768,7 @@ public:
 			for (auto& shell : obj.shells)
 			{
 				shell_id += 1;
-				std::string path = OUTPUT_PATH;
+				std::string path = INTER_PATH;
 				std::string prefix = "/";
 				std::string suffix = ".obj";
 				std::string fname = std::to_string(shell_id);
