@@ -21,7 +21,7 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
     Polyhedron_builder() {}
     void operator()(HDS& hds) {
         CGAL::Polyhedron_incremental_builder_3<HDS> builder(hds, true);
-        std::cout << " -- building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
+        std::cout << "-- building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
 
         builder.begin_surface(vertices.size(), faces.size());
         for (auto const& vertex : vertices) builder.add_vertex(vertex);
@@ -82,7 +82,7 @@ public:
     static void build_convexhull(std::string& fname, Nef& nef) {
         std::string path = INTER_PATH;
         std::string filename = path + fname;
-        std::cout << "reading obj shell: " << fname << " ";
+        std::cout << "reading obj shell: " << fname;
 
         // read obj
         std::string line;
@@ -149,18 +149,20 @@ public:
         CGAL::convex_hull_3(vertices.begin(), vertices.end(), poly);
         //std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << '\n';
         if (poly.is_closed()) {
+            
             // output the convexhull
-            std::string suffix_off = ".off";
+            /*std::string suffix_off = ".off";
             std::string outputname = fname + suffix_off;
             std::string outputfile = path + outputname;
             std::ofstream os(outputfile);
             os << poly;
             os.close();
-            std::cout << "-- output convex hull as: " << outputname << '\n';
+            std::cout << "-- output convex hull as: " << outputname << '\n';*/
 
             // convert the poly to nef_poly and add it to nef
             Nef_polyhedron nef_poly(poly);
             nef.nef_polyhedron_list.emplace_back(nef_poly);
+            std::cout << " -- add it to nef polyhedron list" << '\n';
         }
 
     }

@@ -40,17 +40,18 @@ int main()
 	* shell.poly_vertices -- store the vertices of this shell
 	* shell.faces -> face.v_poly_indices -- store the indices(0-based) point to the shell.poly_vertices 
 	*/
-	// PreparePolyhedron::prepare_poly_vertices_face_indices(f); // uncomment this to output each shell
-	// PreparePolyhedron::output_each_shell(f); // uncomment this to output each shell
+	//PreparePolyhedron::prepare_poly_vertices_face_indices(f); // uncomment this to output each shell
+	//PreparePolyhedron::output_each_shell(f); // uncomment this to output each shell
 
 	std::cout << '\n';
-	std::string obj_name = "/20.obj";
+	
 	Nef nef;
 
-	// build Nef_polyhedra according to different shells
+	// std::string obj_name = "/20.obj";
 	// Build_Nef_Polyhedron::build_polyhedron_each_shell(obj_name, nef);
 	// Build_Nef_Polyhedron::build_convexhull(obj_name, nef);
 
+	// build Nef_polyhedra according to different shells
 	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
 	
 
