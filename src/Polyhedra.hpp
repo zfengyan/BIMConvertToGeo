@@ -291,11 +291,11 @@ public:
         }*/
 
         // test
-        std::string shell_str1 = "cube";
+        std::string shell_str1 = "cube1";
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
         build_polyhedron_each_shell(shell_name1, nef);
 
-        std::string shell_str2 = "tetrahedron";
+        std::string shell_str2 = "cube2";
         std::string shell_name2 = prefix + shell_str2 + suffix_obj;
         build_polyhedron_each_shell(shell_name2, nef);
         
