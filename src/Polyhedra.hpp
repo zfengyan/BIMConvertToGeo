@@ -277,18 +277,27 @@ public:
         std::cout << "-- reading 18.obj to 33.obj, use these shells' convex hull to build corresponding polyhedron" << '\n';
 
         // from 1.obj to 17.obj
-        for (int shell_id = 1; shell_id != 18; ++shell_id) {
+        /*for (int shell_id = 1; shell_id != 18; ++shell_id) {
             std::string shell_str = std::to_string(shell_id);
             std::string shell_name = prefix + shell_str + suffix_obj;
             build_polyhedron_each_shell(shell_name, nef);
-        }
+        }*/
 
         // from 18.obj to 33.obj
-        for (int shell_id = 18; shell_id != 34; ++shell_id) {
+        /*for (int shell_id = 18; shell_id != 34; ++shell_id) {
             std::string shell_str = std::to_string(shell_id);
             std::string shell_name = prefix + shell_str + suffix_obj;
             build_convexhull(shell_name, nef);
-        }
+        }*/
+
+        // test
+        std::string shell_str1 = "cube";
+        std::string shell_name1 = prefix + shell_str1 + suffix_obj;
+        build_polyhedron_each_shell(shell_name1, nef);
+
+        std::string shell_str2 = "tetrahedron";
+        std::string shell_name2 = prefix + shell_str2 + suffix_obj;
+        build_polyhedron_each_shell(shell_name2, nef);
         
         // output nef_polyhedron_list size
         std::cout << "build " << nef.nef_polyhedron_list.size() << " " << "Nef polyhedra" << '\n';
