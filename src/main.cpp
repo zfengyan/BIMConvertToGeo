@@ -47,12 +47,16 @@ int main()
 	
 	Nef nef;
 
+	// test
 	// std::string obj_name = "/20.obj";
 	// Build_Nef_Polyhedron::build_polyhedron_each_shell(obj_name, nef);
 	// Build_Nef_Polyhedron::build_convexhull(obj_name, nef);
 
 	// build Nef_polyhedra according to different shells
 	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
+
+	// build big Nef
+	BigNef::test_big(nef);
 	
 
 	return 0;

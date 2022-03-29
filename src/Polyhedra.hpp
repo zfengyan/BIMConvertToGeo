@@ -1,6 +1,8 @@
 #pragma once
 
+
 #include "LoadOBJ.hpp"
+
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
@@ -8,10 +10,12 @@
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/convex_hull_3.h>
 
+
 typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
 typedef Kernel::Point_3 Point;
 typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
 typedef CGAL::Nef_polyhedron_3<Kernel> Nef_polyhedron;
+
 
 template <class HDS>
 struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
@@ -30,10 +34,12 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
     }
 };
 
+
 // help to store the nef_polyhedron_list
 struct Nef {
     std::vector<Nef_polyhedron> nef_polyhedron_list; // store all Nef polyhedrons
 };
+
 
 // build nef polyhedra from(polyhedron builder and convex hull)
 class Build_Nef_Polyhedron {
@@ -151,13 +157,13 @@ public:
         if (poly.is_closed()) {
             
             // output the convexhull
-            std::string suffix_off = ".off";
+            /*std::string suffix_off = ".off";
             std::string outputname = fname + suffix_off;
             std::string outputfile = path + outputname;
             std::ofstream os(outputfile);
             os << poly;
             os.close();
-            std::cout << "-- output convex hull as: " << outputname << '\n';
+            std::cout << "-- output convex hull as: " << outputname << '\n';*/
 
             // convert the poly to nef_poly and add it to nef
             Nef_polyhedron nef_poly(poly);
@@ -286,5 +292,32 @@ public:
         
         // output nef_polyhedron_list size
         std::cout << "build " << nef.nef_polyhedron_list.size() << " " << "Nef polyhedra" << '\n';
+    }
+};
+
+
+// use CSG to build big Nef polyhedron
+class BigNef {
+public:
+    static void test_big(Nef& nef) {
+        Nef_polyhedron n;
+        for (auto& one_nef : nef.nef_polyhedron_list) {
+            n += one_nef;
+        }
+        std::cout << "is simple: " << n.is_simple() << '\n';
+        if (n.is_simple()) {
+            Polyhedron p;
+            n.convert_to_polyhedron(p);
+
+			// output the union
+            std::string fname = "/union.obj";
+			std::string suffix_off = ".off";
+			std::string outputname = fname + suffix_off;
+            std::string path = INTER_PATH;
+			std::string outputfile = path + outputname;
+			std::ofstream os(outputfile);
+			os << p;
+			os.close();
+        }
     }
 };
