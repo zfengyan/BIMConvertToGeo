@@ -151,13 +151,13 @@ public:
         if (poly.is_closed()) {
             
             // output the convexhull
-            /*std::string suffix_off = ".off";
+            std::string suffix_off = ".off";
             std::string outputname = fname + suffix_off;
             std::string outputfile = path + outputname;
             std::ofstream os(outputfile);
             os << poly;
             os.close();
-            std::cout << "-- output convex hull as: " << outputname << '\n';*/
+            std::cout << "-- output convex hull as: " << outputname << '\n';
 
             // convert the poly to nef_poly and add it to nef
             Nef_polyhedron nef_poly(poly);
