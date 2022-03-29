@@ -21,8 +21,7 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
     Polyhedron_builder() {}
     void operator()(HDS& hds) {
         CGAL::Polyhedron_incremental_builder_3<HDS> builder(hds, true);
-        std::cout << "constructing polyhedron -- ";
-        std::cout << "building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
+        std::cout << " -- building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
 
         builder.begin_surface(vertices.size(), faces.size());
         for (auto const& vertex : vertices) builder.add_vertex(vertex);
@@ -83,7 +82,7 @@ public:
     static void build_convexhull(std::string& fname, Nef& nef) {
         std::string path = INTER_PATH;
         std::string filename = path + fname;
-        std::cout << "-- loading obj shell: " << filename << " to build its convexhull" << '\n';
+        std::cout << "reading obj shell: " << fname << " ";
 
         // read obj
         std::string line;
@@ -148,23 +147,20 @@ public:
         Polyhedron poly;
         // compute convex hull of non-collinear points
         CGAL::convex_hull_3(vertices.begin(), vertices.end(), poly);
-        std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << '\n';
+        //std::cout << "The convex hull contains " << poly.size_of_vertices() << " vertices" << '\n';
         if (poly.is_closed()) {
-            std::cout << "This polyhedron is closed. " << '\n';
-
             // output the convexhull
-            std::string outputname = "/32.off";
+            std::string suffix_off = ".off";
+            std::string outputname = fname + suffix_off;
             std::string outputfile = path + outputname;
             std::ofstream os(outputfile);
             os << poly;
             os.close();
-            std::cout << "output convex hull as: " << outputfile << '\n';
+            std::cout << "-- output convex hull as: " << outputname << '\n';
 
             // convert the poly to nef_poly and add it to nef
             Nef_polyhedron nef_poly(poly);
             nef.nef_polyhedron_list.emplace_back(nef_poly);
-            std::cout << "add nef polyhedron to nef list" << '\n';
-            std::cout << '\n';
         }
 
     }
@@ -176,7 +172,7 @@ public:
     static void build_polyhedron_each_shell(std::string& fname, Nef& nef) {
         std::string path = INTER_PATH;
         std::string filename = path + fname;
-        std::cout << "-- loading obj shell: " << filename << '\n';
+        std::cout << "reading obj shell: " << fname << " ";
 
         // read obj
         std::string line;
@@ -250,12 +246,9 @@ public:
         // construct polyhedron and add it to nef ------------------------------------------------------------------
         Polyhedron polyhedron;
         polyhedron.delegate(polyhedron_builder);
-        std::cout << "done" << '\n';
         if (polyhedron.is_closed()) {
             Nef_polyhedron nef_poly(polyhedron);
             nef.nef_polyhedron_list.emplace_back(nef_poly);
-            std::cout << "add nef polyhedron to nef list" << '\n';
-            std::cout << '\n';
         }
        
     }
@@ -266,11 +259,30 @@ public:
     * for 1~17.obj files, use polyhedron builder to build polyhedra
     * for 18~33.obj files, use the corresponding convex hull to build polyhedra and store the polyhedra as .off files
     */
-    static void build_nef_polyhedra() {
+    static void build_nef_polyhedra(Nef& nef) {
 
         // common file prefix and suffix for obj files
         std::string prefix = "/";
         std::string suffix_obj = ".obj";
+     
+        std::cout << "-- reading 1.obj to 17.obj, these shells can be passed to polyhedron builder" << '\n';
+        std::cout << "-- reading 18.obj to 33.obj, use these shells' convex hull to build corresponding polyhedron" << '\n';
 
+        // from 1.obj to 17.obj
+        for (int shell_id = 1; shell_id != 18; ++shell_id) {
+            std::string shell_str = std::to_string(shell_id);
+            std::string shell_name = prefix + shell_str + suffix_obj;
+            build_polyhedron_each_shell(shell_name, nef);
+        }
+
+        // from 18.obj to 33.obj
+        for (int shell_id = 18; shell_id != 34; ++shell_id) {
+            std::string shell_str = std::to_string(shell_id);
+            std::string shell_name = prefix + shell_str + suffix_obj;
+            build_convexhull(shell_name, nef);
+        }
+        
+        // output nef_polyhedron_list size
+        std::cout << "build " << nef.nef_polyhedron_list.size() << " " << "Nef polyhedra" << '\n';
     }
 };

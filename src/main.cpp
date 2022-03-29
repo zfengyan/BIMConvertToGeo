@@ -49,10 +49,9 @@ int main()
 
 	// build Nef_polyhedra according to different shells
 	// Build_Nef_Polyhedron::build_polyhedron_each_shell(obj_name, nef);
-	Build_Nef_Polyhedron::build_convexhull(obj_name, nef);
-	
-	// Nef nef;
-	// Build_Nef_Polyhedron::construct_nef_polyhedron(f, nef);
+	// Build_Nef_Polyhedron::build_convexhull(obj_name, nef);
+
+	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
 	
 
 	return 0;
