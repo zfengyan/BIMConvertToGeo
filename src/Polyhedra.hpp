@@ -31,11 +31,13 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
     }
 };
 
+// help to store the nef_polyhedron_list
 struct Nef {
     std::vector<Nef_polyhedron> nef_polyhedron_list; // store all Nef polyhedrons
 };
 
-class Construct_Nef_Polyhedron {
+// build nef polyhedra from(polyhedron builder and convex hull)
+class Build_Nef_Polyhedron {
 private:
     /*
     * check if a vertex already exists in a vertices vector
@@ -74,53 +76,11 @@ private:
         return 0;
     }
 public:
-    /*
-    * construct nef polyhedrons and store to nef_polyhedron_list
-    * OBJFile: use f.new_vertices, vertex.newid and face.new_v_indices
-    */
-    static void construct_nef_polyhedron(OBJFile& f, Nef& nef) {
-        std::cout << '\n';
-        std::cout << "-- constructing Nef polyhedron..." << '\n';
-
-        unsigned long count = 0;
-        for (auto& obj : f.objects) // access elements from objects
-        {
-            for (auto& shell : obj.shells) // load each shell into a CGAL Polyhedron_3 
-            {
-                Polyhedron polyhedron;
-                Polyhedron_builder<Polyhedron::HalfedgeDS> polyhedron_builder;
-
-                // add vertices of this shell to builder's vertices list
-                for (auto const& v : shell.poly_vertices) {
-                    polyhedron_builder.vertices.push_back(Point(v.x, v.y, v.z));
-                }
-                
-                // add faces of this shell to builder's faces list
-                for (auto const& face : shell.faces) {
-                    polyhedron_builder.faces.emplace_back();
-                    for (auto const& index : face.v_poly_indices) {
-                        polyhedron_builder.faces.back().push_back(index); // index is 0-based
-                    }
-                }
-                polyhedron.delegate(polyhedron_builder);
-                ++count;
-
-                // if polyhedron is closed, convert it to Nef_polyhedron and store
-                if (polyhedron.is_closed()) {
-                    Nef_polyhedron nef_polyhedron(polyhedron);
-                    nef.nef_polyhedron_list.emplace_back(nef_polyhedron);
-                }
-            }
-        }
-        std::cout << "construct " << count << " polyhedrons " << "for " << f.shells.size() << " shells" << '\n';
-        std::cout << "construct " << nef.nef_polyhedron_list.size() << " nef polyhedrons " << '\n';
-    }
-
 
     /*
     * compute convex hull for shells which don't work for polyhedron builder
     */
-    static void build_convexhull(std::string& fname) {
+    static void build_convexhull(std::string& fname, Nef& nef) {
         std::string path = INTER_PATH;
         std::string filename = path + fname;
         std::cout << "-- loading obj shell: " << filename << " to build its convexhull" << '\n';
@@ -199,6 +159,12 @@ public:
             os << poly;
             os.close();
             std::cout << "output convex hull as: " << outputfile << '\n';
+
+            // convert the poly to nef_poly and add it to nef
+            Nef_polyhedron nef_poly(poly);
+            nef.nef_polyhedron_list.emplace_back(nef_poly);
+            std::cout << "add nef polyhedron to nef list" << '\n';
+            std::cout << '\n';
         }
 
     }
@@ -207,7 +173,7 @@ public:
     /*
     * construct polyhedron for each obj shell
     */
-    static void construct_polyhedron_each_shell_obj(std::string& fname) {
+    static void build_polyhedron_each_shell(std::string& fname, Nef& nef) {
         std::string path = INTER_PATH;
         std::string filename = path + fname;
         std::cout << "-- loading obj shell: " << filename << '\n';
@@ -281,9 +247,30 @@ public:
 
         } // end while: each line in the file
 
-        // construct polyhedron ------------------------------------------------------------------
+        // construct polyhedron and add it to nef ------------------------------------------------------------------
         Polyhedron polyhedron;
         polyhedron.delegate(polyhedron_builder);
         std::cout << "done" << '\n';
+        if (polyhedron.is_closed()) {
+            Nef_polyhedron nef_poly(polyhedron);
+            nef.nef_polyhedron_list.emplace_back(nef_poly);
+            std::cout << "add nef polyhedron to nef list" << '\n';
+            std::cout << '\n';
+        }
+       
+    }
+
+
+    /*
+    * build polyhedra from polyhedron builder and convexhull
+    * for 1~17.obj files, use polyhedron builder to build polyhedra
+    * for 18~33.obj files, use the corresponding convex hull to build polyhedra and store the polyhedra as .off files
+    */
+    static void build_nef_polyhedra() {
+
+        // common file prefix and suffix for obj files
+        std::string prefix = "/";
+        std::string suffix_obj = ".obj";
+
     }
 };
