@@ -39,6 +39,7 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
 // help to store the nef_polyhedron_list
 struct Nef {
     std::vector<Nef_polyhedron> nef_polyhedron_list; // store all Nef polyhedrons
+    Nef_polyhedron big_nef; // store the big nef
 };
 
 
@@ -291,14 +292,33 @@ public:
             build_convexhull(shell_name, nef);
         }*/
 
-        // test
+        // test       
         std::string shell_str1 = "cube1";
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
         build_polyhedron_each_shell(shell_name1, nef);
 
-        std::string shell_str2 = "cube3";
-        std::string shell_name2 = prefix + shell_str2 + suffix_obj;
-        build_polyhedron_each_shell(shell_name2, nef);
+        //std::string shell_str2 = "cube3";
+        //std::string shell_name2 = prefix + shell_str2 + suffix_obj;
+        //build_polyhedron_each_shell(shell_name2, nef);
+
+        // test big nef
+        /*
+        for (int shell_id = 1; shell_id != 11; ++shell_id) {
+            std::string shell_str = std::to_string(shell_id);
+            std::string shell_name = prefix + shell_str + suffix_obj;
+            build_convexhull(shell_name, nef);
+        }
+
+        std::string shell_15 = std::to_string(15);
+        std::string shell_name15 = prefix + shell_15 + suffix_obj;
+        build_convexhull(shell_name15, nef);
+
+        for (int shell_id = 18; shell_id != 31; ++shell_id) {
+            std::string shell_str = std::to_string(shell_id);
+            std::string shell_name = prefix + shell_str + suffix_obj;
+            build_convexhull(shell_name, nef);
+        }
+        */
         
         // output nef_polyhedron_list size
         std::cout << "build " << nef.nef_polyhedron_list.size() << " " << "Nef polyhedra" << '\n';
@@ -311,15 +331,15 @@ class BigNef {
 public:
     static void test_big(Nef& nef) {
 		/*
-        Nef_polyhedron n;
 		for (auto& one_nef : nef.nef_polyhedron_list) {
-			n += one_nef;
+            nef.big_nef += one_nef;
 		}
-		std::cout << "is simple: " << n.is_simple() << '\n';
-		std::cout << "num of vertices of the Nef after operation: " << n.number_of_vertices() << '\n';
-		if (n.is_simple()) {
+		std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
+		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+        
+		if (nef.big_nef.is_simple()) {
 			Polyhedron p;
-			n.convert_to_polyhedron(p);
+            nef.big_nef.convert_to_polyhedron(p);
 
 			// output the union
 			std::string fname = "/union.obj";
@@ -332,23 +352,56 @@ public:
 			os.close();
 		}
         */
+        
 
         // minkowski_sum_3() test
-        // Nef_polyhedron result = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);      
-        Nef_polyhedron result(nef.nef_polyhedron_list[0] + nef.nef_polyhedron_list[1]);
-        std::cout << "num of vertices of the Nef after operation: " << result.number_of_vertices() << '\n';
-        std::cout << "is simple: " << result.is_simple() << '\n';
+        //Nef_polyhedron result = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);            
+        //nef.big_nef = (nef.nef_polyhedron_list[0] + nef.nef_polyhedron_list[1]);
+        nef.big_nef = nef.nef_polyhedron_list[0];
+        //std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+        //std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
 
-        // output the minkowski_sum
-        std::string fname = "/minkowski_sum.obj";
-        std::string suffix_off = ".off";
-        std::string outputname = fname + suffix_off;
-        std::string path = INTER_PATH;
-        std::string outputfile = path + outputname;
-        std::ofstream os(outputfile);
-        Polyhedron p;
-        result.convert_to_polyhedron(p);
-        os << p;
-        os.close();
+        //// output
+        //std::string fname = "/test.obj";
+        //std::string suffix_off = ".off";
+        //std::string outputname = fname + suffix_off;
+        //std::string path = INTER_PATH;
+        //std::string outputfile = path + outputname;
+        //std::ofstream os(outputfile);
+        //Polyhedron p;
+        //nef.big_nef.convert_to_polyhedron(p);
+        //os << p;
+        //os.close();
+        
+    }
+};
+
+
+// extract geometries
+struct Shell_explorer {
+    std::vector<Point> vertices;
+    std::vector<std::vector<unsigned long>> faces;
+
+    void visit(Nef_polyhedron::Vertex_const_handle v) {}
+    void visit(Nef_polyhedron::Halfedge_const_handle he) {
+        
+        Nef_polyhedron::Vertex_const_handle v_source = he->source();
+        Nef_polyhedron::Vertex_const_handle v_target = he->target();
+        std::cout << "source: ";
+        vertices.emplace_back(v_source->point());
+        //std::cout << "(" << v_source->point().x() << ", " << v_source->point().y() << ", " << v_source->point().z() << ")" << " ";
+        std::cout << "target: ";
+        //std::cout << "(" << v_target->point().x() << ", " << v_target->point().y() << ", " << v_target->point().z() << ")" << '\n';
+        vertices.emplace_back(v_target->point());
+    }
+    void visit(Nef_polyhedron::SHalfedge_const_handle she) {}
+    void visit(Nef_polyhedron::SHalfloop_const_handle shl) {}
+    void visit(Nef_polyhedron::SFace_const_handle sf) {}
+
+    void visit(Nef_polyhedron::Halffacet_const_handle hf) {
+        // do something to each half-face of a shell
+        // std::cout <<"mark: "<< hf->mark() << '\n';        
+        std::cout << "vertices size: " << vertices.size() << '\n';
+        //std::cout << "faces size: " << faces.size() << '\n';
     }
 };
