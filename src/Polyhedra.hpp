@@ -295,7 +295,7 @@ public:
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
         build_polyhedron_each_shell(shell_name1, nef);
 
-        std::string shell_str2 = "cube2";
+        std::string shell_str2 = "cube3";
         std::string shell_name2 = prefix + shell_str2 + suffix_obj;
         build_polyhedron_each_shell(shell_name2, nef);
         
@@ -314,6 +314,7 @@ public:
             n += one_nef;
         }
         std::cout << "is simple: " << n.is_simple() << '\n';
+        std::cout << "num of vertices of the Nef after operation: " << n.number_of_vertices() << '\n';
         if (n.is_simple()) {
             Polyhedron p;
             n.convert_to_polyhedron(p);
