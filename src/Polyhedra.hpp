@@ -9,6 +9,7 @@
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/convex_hull_3.h>
+#include <CGAL/minkowski_sum_3.h>
 
 
 typedef CGAL::Exact_predicates_exact_constructions_kernel Kernel;
@@ -309,25 +310,45 @@ public:
 class BigNef {
 public:
     static void test_big(Nef& nef) {
+		/*
         Nef_polyhedron n;
-        for (auto& one_nef : nef.nef_polyhedron_list) {
-            n += one_nef;
-        }
-        std::cout << "is simple: " << n.is_simple() << '\n';
-        std::cout << "num of vertices of the Nef after operation: " << n.number_of_vertices() << '\n';
-        if (n.is_simple()) {
-            Polyhedron p;
-            n.convert_to_polyhedron(p);
+		for (auto& one_nef : nef.nef_polyhedron_list) {
+			n += one_nef;
+		}
+		std::cout << "is simple: " << n.is_simple() << '\n';
+		std::cout << "num of vertices of the Nef after operation: " << n.number_of_vertices() << '\n';
+		if (n.is_simple()) {
+			Polyhedron p;
+			n.convert_to_polyhedron(p);
 
 			// output the union
-            std::string fname = "/union.obj";
+			std::string fname = "/union.obj";
 			std::string suffix_off = ".off";
 			std::string outputname = fname + suffix_off;
-            std::string path = INTER_PATH;
+			std::string path = INTER_PATH;
 			std::string outputfile = path + outputname;
 			std::ofstream os(outputfile);
 			os << p;
 			os.close();
-        }
+		}
+        */
+
+        // minkowski_sum_3() test
+        // Nef_polyhedron result = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);      
+        Nef_polyhedron result(nef.nef_polyhedron_list[0] + nef.nef_polyhedron_list[1]);
+        std::cout << "num of vertices of the Nef after operation: " << result.number_of_vertices() << '\n';
+        std::cout << "is simple: " << result.is_simple() << '\n';
+
+        // output the minkowski_sum
+        std::string fname = "/minkowski_sum.obj";
+        std::string suffix_off = ".off";
+        std::string outputname = fname + suffix_off;
+        std::string path = INTER_PATH;
+        std::string outputfile = path + outputname;
+        std::ofstream os(outputfile);
+        Polyhedron p;
+        result.convert_to_polyhedron(p);
+        os << p;
+        os.close();
     }
 };
