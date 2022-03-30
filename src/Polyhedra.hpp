@@ -384,7 +384,7 @@ struct Shell_explorer {
 
     void visit(Nef_polyhedron::Vertex_const_handle v) {}
     void visit(Nef_polyhedron::Halfedge_const_handle he) {
-        
+        /*
         Nef_polyhedron::Vertex_const_handle v_source = he->source();
         Nef_polyhedron::Vertex_const_handle v_target = he->target();
         std::cout << "source: ";
@@ -393,15 +393,21 @@ struct Shell_explorer {
         std::cout << "target: ";
         //std::cout << "(" << v_target->point().x() << ", " << v_target->point().y() << ", " << v_target->point().z() << ")" << '\n';
         vertices.emplace_back(v_target->point());
+        */
     }
     void visit(Nef_polyhedron::SHalfedge_const_handle she) {}
     void visit(Nef_polyhedron::SHalfloop_const_handle shl) {}
     void visit(Nef_polyhedron::SFace_const_handle sf) {}
 
     void visit(Nef_polyhedron::Halffacet_const_handle hf) {
-        // do something to each half-face of a shell
-        // std::cout <<"mark: "<< hf->mark() << '\n';        
-        std::cout << "vertices size: " << vertices.size() << '\n';
-        //std::cout << "faces size: " << faces.size() << '\n';
+        int count = 0;
+        for (Nef_polyhedron::Halffacet_cycle_const_iterator it = hf->facet_cycles_begin(); it != hf->facet_cycles_end(); it++) {
+            //Nef_polyhedron::Halfedge_const_handle he = Nef_polyhedron::Halfedge_const_handle(it);
+            Nef_polyhedron::Halfedge_const_handle he;
+            CGAL::assign(he, it);
+            CGAL_assertion(he != 0);
+            ++count;
+        }
+
     }
 };
