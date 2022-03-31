@@ -297,28 +297,28 @@ public:
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
         build_polyhedron_each_shell(shell_name1, nef);
 
-        //std::string shell_str2 = "cube3";
-        //std::string shell_name2 = prefix + shell_str2 + suffix_obj;
-        //build_polyhedron_each_shell(shell_name2, nef);
+        std::string shell_str2 = "cube3";
+        std::string shell_name2 = prefix + shell_str2 + suffix_obj;
+        build_polyhedron_each_shell(shell_name2, nef);
 
         // test big nef
-        /*
-        for (int shell_id = 1; shell_id != 11; ++shell_id) {
-            std::string shell_str = std::to_string(shell_id);
-            std::string shell_name = prefix + shell_str + suffix_obj;
-            build_convexhull(shell_name, nef);
-        }
+        
+        //for (int shell_id = 1; shell_id != 11; ++shell_id) {
+        //    std::string shell_str = std::to_string(shell_id);
+        //    std::string shell_name = prefix + shell_str + suffix_obj;
+        //    build_convexhull(shell_name, nef);
+        //}
 
-        std::string shell_15 = std::to_string(15);
-        std::string shell_name15 = prefix + shell_15 + suffix_obj;
-        build_convexhull(shell_name15, nef);
+        //std::string shell_15 = std::to_string(15);
+        //std::string shell_name15 = prefix + shell_15 + suffix_obj;
+        //build_convexhull(shell_name15, nef);
 
-        for (int shell_id = 18; shell_id != 31; ++shell_id) {
-            std::string shell_str = std::to_string(shell_id);
-            std::string shell_name = prefix + shell_str + suffix_obj;
-            build_convexhull(shell_name, nef);
-        }
-        */
+        //for (int shell_id = 18; shell_id != 31; ++shell_id) {
+        //    std::string shell_str = std::to_string(shell_id);
+        //    std::string shell_name = prefix + shell_str + suffix_obj;
+        //    build_convexhull(shell_name, nef);
+        //}
+        
         
         // output nef_polyhedron_list size
         std::cout << "build " << nef.nef_polyhedron_list.size() << " " << "Nef polyhedra" << '\n';
@@ -330,13 +330,14 @@ public:
 class BigNef {
 public:
     static void test_big(Nef& nef) {
-		/*
-		for (auto& one_nef : nef.nef_polyhedron_list) {
+		
+		/*for (auto& one_nef : nef.nef_polyhedron_list) {
             nef.big_nef += one_nef;
 		}
 		std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
-		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';*/
         
+        /*
 		if (nef.big_nef.is_simple()) {
 			Polyhedron p;
             nef.big_nef.convert_to_polyhedron(p);
@@ -353,25 +354,26 @@ public:
 		}
         */
         
+        
 
         // minkowski_sum_3() test
-        //Nef_polyhedron result = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);            
-        //nef.big_nef = (nef.nef_polyhedron_list[0] + nef.nef_polyhedron_list[1]);
-        nef.big_nef = nef.nef_polyhedron_list[0];
+        nef.big_nef = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);           
+        //nef.big_nef = (nef.nef_polyhedron_list[0] - nef.nef_polyhedron_list[1]); // * CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);
+        
         //std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
         //std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
 
         //// output
-        //std::string fname = "/test.obj";
-        //std::string suffix_off = ".off";
-        //std::string outputname = fname + suffix_off;
-        //std::string path = INTER_PATH;
-        //std::string outputfile = path + outputname;
-        //std::ofstream os(outputfile);
-        //Polyhedron p;
-        //nef.big_nef.convert_to_polyhedron(p);
-        //os << p;
-        //os.close();
+        std::string fname = "/test.obj";
+        std::string suffix_off = ".off";
+        std::string outputname = fname + suffix_off;
+        std::string path = INTER_PATH;
+        std::string outputfile = path + outputname;
+        std::ofstream os(outputfile);
+        Polyhedron p;
+        nef.big_nef.convert_to_polyhedron(p);
+        os << p;
+        os.close();
         
     }
 };
@@ -404,8 +406,8 @@ struct Shell_explorer {
         for (Nef_polyhedron::Halffacet_cycle_const_iterator it = hf->facet_cycles_begin(); it != hf->facet_cycles_end(); it++) {
             //Nef_polyhedron::Halfedge_const_handle he = Nef_polyhedron::Halfedge_const_handle(it);
             Nef_polyhedron::Halfedge_const_handle he;
-            CGAL::assign(he, it);
             CGAL_assertion(he != 0);
+            //Nef_polyhedron::SHalfedge_around_facet_const_circulator he_start(he);
             ++count;
         }
 

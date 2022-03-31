@@ -60,14 +60,16 @@ int main()
 	
 	// extract geometries ------------------------------------------------------------
 	
+	
 	int volume_count = 0;
 	int shell_count = 0;
 	Nef_polyhedron::Volume_const_iterator current_volume;
 	CGAL_forall_volumes(current_volume, nef.big_nef) {
 		std::cout << "volume: " << volume_count++ << '\n';
+		std::cout << "volume mark: " << current_volume->mark() << '\n';
 		Nef_polyhedron::Shell_entry_const_iterator current_shell;
 		CGAL_forall_shells_of(current_shell, current_volume) {
-			std::cout << "shell: " << shell_count++ << '\n';
+			//std::cout << "shell: " << shell_count++ << '\n';
 			Shell_explorer se;
 			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
 			nef.big_nef.visit_shell_objects(sface_in_shell, se);
