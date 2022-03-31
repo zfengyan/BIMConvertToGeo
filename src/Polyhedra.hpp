@@ -297,9 +297,9 @@ public:
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
         build_polyhedron_each_shell(shell_name1, nef);
 
-        std::string shell_str2 = "cube3";
+        /*std::string shell_str2 = "cube3";
         std::string shell_name2 = prefix + shell_str2 + suffix_obj;
-        build_polyhedron_each_shell(shell_name2, nef);
+        build_polyhedron_each_shell(shell_name2, nef);*/
 
         // test big nef
         
@@ -357,23 +357,24 @@ public:
         
 
         // minkowski_sum_3() test
-        nef.big_nef = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);           
+        //nef.big_nef = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);           
         //nef.big_nef = (nef.nef_polyhedron_list[0] - nef.nef_polyhedron_list[1]); // * CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);
         
+        nef.big_nef = nef.nef_polyhedron_list[0];
         //std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
         //std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
 
         //// output
-        std::string fname = "/test.obj";
-        std::string suffix_off = ".off";
-        std::string outputname = fname + suffix_off;
-        std::string path = INTER_PATH;
-        std::string outputfile = path + outputname;
-        std::ofstream os(outputfile);
-        Polyhedron p;
-        nef.big_nef.convert_to_polyhedron(p);
-        os << p;
-        os.close();
+        //std::string fname = "/test.obj";
+        //std::string suffix_off = ".off";
+        //std::string outputname = fname + suffix_off;
+        //std::string path = INTER_PATH;
+        //std::string outputfile = path + outputname;
+        //std::ofstream os(outputfile);
+        //Polyhedron p;
+        //nef.big_nef.convert_to_polyhedron(p);
+        //os << p;
+        //os.close();
         
     }
 };

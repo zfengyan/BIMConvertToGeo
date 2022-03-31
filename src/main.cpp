@@ -65,7 +65,7 @@ int main()
 	int shell_count = 0;
 	Nef_polyhedron::Volume_const_iterator current_volume;
 	CGAL_forall_volumes(current_volume, nef.big_nef) {
-		std::cout << "volume: " << volume_count++ << '\n';
+		std::cout << "volume: " << volume_count++ << " ";
 		std::cout << "volume mark: " << current_volume->mark() << '\n';
 		Nef_polyhedron::Shell_entry_const_iterator current_shell;
 		CGAL_forall_shells_of(current_shell, current_volume) {
