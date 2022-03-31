@@ -118,7 +118,9 @@ void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
 	json["CityObjects"]["Building_1_0"]["geometry"] = nlohmann::json::array();
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["type"] = "Solid";
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["lod"] = "2.2";
-	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({ {{{0, 4, 6, 2}},{{ 3, 2, 6, 7 }}} });
+
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({});
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"].push_back({{{0, 4, 6, 2}}});
 
 	json["vertices"] = nlohmann::json::array({});
 	json["vertices"].push_back({ 1.00, 1.00, 0.00 });
