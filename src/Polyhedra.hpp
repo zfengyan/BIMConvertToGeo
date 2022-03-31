@@ -403,19 +403,27 @@ struct Shell_explorer {
     void visit(Nef_polyhedron::SFace_const_handle sf) {}
 
     void visit(Nef_polyhedron::Halffacet_const_handle hf) {
-        int count = 0;
+
         for (Nef_polyhedron::Halffacet_cycle_const_iterator it = hf->facet_cycles_begin(); it != hf->facet_cycles_end(); it++) {
             
-            //Nef_polyhedron::Halfedge_const_handle he = Nef_polyhedron::Halfedge_const_handle(it);
-            std::cout << it.is_shalfedge() << " " << it.is_shalfloop() << '\n';
-            Nef_polyhedron::Halfedge_const_handle he;
-            
-            CGAL::assign(he, it);
-            CGAL_assertion(he != 0);
-            
-            
-            //Nef_polyhedron::SHalfedge_around_facet_const_circulator he_start(he);
-            ++count;
+            //std::cout << it.is_shalfedge() << " " << it.is_shalfloop() << '\n';
+            Nef_polyhedron::SHalfedge_const_handle she = Nef_polyhedron::SHalfedge_const_handle(it);
+            CGAL_assertion(she != 0);
+            Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_start = she;
+            Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_end = hc_start;
+            std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
+
+            CGAL_For_all(hc_start, hc_end)
+            {
+                Nef_polyhedron::SVertex_const_handle svert = hc_start->source();
+                Point vpoint = svert->center_vertex()->point();
+                std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
+
+                vertices.push_back(vpoint);
+            }
+            std::cout << '\n';
+
+         
         }
 
     }
