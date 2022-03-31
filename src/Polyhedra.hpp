@@ -414,7 +414,7 @@ struct Shell_explorer {
             //std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
 
             std::cout << "facet status: " << hf->mark() << '\n';
-            CGAL_For_all(hc_start, hc_end) // each halffacet
+            CGAL_For_all(hc_start, hc_end) // each vertex of one halffacet
             {
                 Nef_polyhedron::SVertex_const_handle svert = hc_start->source();
                 Point vpoint = svert->center_vertex()->point();

@@ -59,7 +59,7 @@ int main()
 	BigNef::test_big(nef);
 	
 	// extract geometries ------------------------------------------------------------
-	
+	std::vector<Shell_explorer> shell_explorers;
 	
 	int volume_count = 0;
 	int shell_count = 0;
@@ -73,9 +73,14 @@ int main()
 			Shell_explorer se;
 			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
 			nef.big_nef.visit_shell_objects(sface_in_shell, se);
-			//...
+			
+			//add the se to shell_explorers
+			shell_explorers.emplace_back(se);
 		}
 	}
+
+	std::cout << "after extracting geometries: " << '\n';
+	std::cout << shell_explorers.size() << '\n';
 	
 
 	return 0;
