@@ -411,14 +411,14 @@ struct Shell_explorer {
             CGAL_assertion(she != 0);
             Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_start = she;
             Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_end = hc_start;
-            std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
+            //std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
 
-            CGAL_For_all(hc_start, hc_end)
+            std::cout << "facet status: " << hf->mark() << '\n';
+            CGAL_For_all(hc_start, hc_end) // each halffacet
             {
                 Nef_polyhedron::SVertex_const_handle svert = hc_start->source();
                 Point vpoint = svert->center_vertex()->point();
                 std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
-
                 vertices.push_back(vpoint);
             }
             std::cout << '\n';
