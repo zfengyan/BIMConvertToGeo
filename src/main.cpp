@@ -4,6 +4,10 @@
 #include "json.hpp"
 #include "Polyhedra.hpp"
 
+
+void write_to_json(std::vector<Shell_explorer>& shell_explorers);
+
+
 int main()
 {
 	//std::cout << "Hello CMake." << '\n';
@@ -75,13 +79,61 @@ int main()
 			nef.big_nef.visit_shell_objects(sface_in_shell, se);
 			
 			//add the se to shell_explorers
-			shell_explorers.emplace_back(se);
+			shell_explorers.push_back(se);
 		}
 	}
 
 	std::cout << "after extracting geometries: " << '\n';
 	std::cout << shell_explorers.size() << '\n';
-	
+	std::cout << "-------------------------------" << '\n';
+	for (auto& shell : shell_explorers) {
+		std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
+		std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
+		std::cout << '\n';
+	}
+
+	write_to_json(shell_explorers);
 
 	return 0;
+}
+
+
+void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
+	nlohmann::json json;
+	json["type"] = "CityJSON";
+	json["version"] = "1.1";
+	json["transform"] = nlohmann::json::object();
+	json["transform"]["scale"] = nlohmann::json::array({ 1.0, 1.0, 1.0 });
+	json["transform"]["translate"] = nlohmann::json::array({ 0.0, 0.0, 0.0 });
+	json["CityObjects"] = nlohmann::json::object();
+
+	json["CityObjects"]["Building_1"]["type"] = "Building";
+	json["CityObjects"]["Building_1"]["attributes"] = nlohmann::json({});
+	json["CityObjects"]["Building_1"]["children"] = nlohmann::json::array({ "Building_1_0" });
+	json["CityObjects"]["Building_1"]["geometry"] = nlohmann::json::array({});
+
+	json["CityObjects"]["Building_1_0"]["type"] = "BuildingPart";
+	json["CityObjects"]["Building_1_0"]["attributes"] = nlohmann::json({});
+	json["CityObjects"]["Building_1_0"]["parents"] = nlohmann::json::array({"Building_1"});
+	json["CityObjects"]["Building_1_0"]["geometry"] = nlohmann::json::array();
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["type"] = "Solid";
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["lod"] = "2.2";
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({ {{{0, 4, 6, 2}},{{ 3, 2, 6, 7 }}} });
+
+	json["vertices"] = nlohmann::json::array({});
+	json["vertices"].push_back({ 1.00, 1.00, 0.00 });
+	json["vertices"].push_back({ 1.00, 0.00, 0.00 });
+	json["vertices"].push_back({ 1.00, 1.00, 1.00 });
+	json["vertices"].push_back({ 1.00, 0.00, 1.00 });
+	json["vertices"].push_back({ 0.00, 1.00, 0.00 });
+	json["vertices"].push_back({ 0.00, 0.00, 0.00 });
+	json["vertices"].push_back({ 0.00, 1.00, 1.00 });
+	json["vertices"].push_back({ 0.00, 0.00, 1.00 });
+
+
+	std::string json_string = json.dump(2);
+	std::string outputname = "/mybuilding.json";
+	std::ofstream out_stream(OUTPUT_PATH + outputname);
+	out_stream << json_string;
+	out_stream.close();
 }

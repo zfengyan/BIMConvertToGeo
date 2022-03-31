@@ -20,4 +20,4 @@ add_definitions(
   -DINTER_PATH=\"${PROJECT_SOURCE_DIR}/data/intermediateData\"
 )
 
-add_executable (BIMConvertToGeo "src/main.cpp"  "src/LoadOBJ.hpp" "src/Polyhedra.hpp")
+add_executable (BIMConvertToGeo "src/main.cpp"  "src/LoadOBJ.hpp" "src/Polyhedra.hpp" )
