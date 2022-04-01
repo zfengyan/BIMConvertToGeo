@@ -5,14 +5,18 @@
 #include "Polyhedra.hpp"
 
 
-void process_shell_explorer_indices(std::vector<Shell_explorer>& shell_explorers);
+void process_shell_explorer_indices(
+	std::vector<Shell_explorer>& shell_explorers,
+	std::vector<Point>& vertices,
+	std::vector<Shell>& result_shells);
+
 void write_to_json(std::vector<Shell_explorer>& shell_explorers);
 
 
 int main()
 {
 	//std::cout << "Hello CMake." << '\n';
-	//std::cout << "-- activated data folder: " << DATA_PATH << '\n';
+	std::cout << "-- activated data folder: " << DATA_PATH << '\n';
 
 	//OBJFile f; // organize vertcies, faces, shells and objects
 	//
@@ -80,24 +84,50 @@ int main()
 	}
 
 	//process the indices
-	process_shell_explorer_indices(shell_explorers);
+
+	//process_shell_explorer_indices(shell_explorers);
 
 	std::cout << "after extracting geometries: " << '\n';
 	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
 	std::cout << "-------------------------------" << '\n';
 	for (auto& shell : shell_explorers) {
 		std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
-		std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
+		std::cout << "faces size of this shell: " << shell.faces.size() << '\n';
 		std::cout << '\n';
 	}
 
-	write_to_json(shell_explorers);
+	std::cout << "shell test: " << '\n';
+	auto& shell_1 = shell_explorers[1];
+	auto& shell_3 = shell_explorers[3];
+	std::cout << "shell - 1: " << '\n';
+	for (auto& v : shell_1.vertices)std::cout << "v: " << v.x() << '\n';
+	std::cout << "shell - 3: " << '\n';
+	for (auto& v : shell_3.vertices)std::cout << "v: " << v.x() << '\n';
+
+	//write_to_json(shell_explorers);
 
 	return 0;
 }
 
 
-void process_shell_explorer_indices(std::vector<Shell_explorer>& shell_explorers) {
+/*
+* select the se which is needed to be written to cityjson
+* add non-repeated vertices to vertices list
+* add the correct indices of each face in each shell
+*
+* selected shell explorer:
+* shell_explorers[0] - exterior
+* shell_explorers[1] - room
+* shell_explorers[4] - room
+* shell_explorers[5] - room
+* shell_explorers[6] - room
+*/
+void process_shell_explorer_indices(
+	std::vector<Shell_explorer>& shell_explorers,
+	std::vector<Point>& vertices,
+	std::vector<Shell>& result_shells) 
+{
+
 	int accumulated_index = 0;
 	for (auto& se : shell_explorers) {
 		for (auto& face : se.faces) {

@@ -247,7 +247,6 @@ public:
         Polyhedron polyhedron;
         polyhedron.delegate(polyhedron_builder);
         if (polyhedron.is_closed()) {
-            std::cout << "build nef polyhedron " << '\n';
             Nef_polyhedron nef_poly(polyhedron);
             return nef_poly;
         }
@@ -285,7 +284,7 @@ public:
                 std::string shell_name = prefix + shell_str + suffix_obj;
                 Nef_polyhedron nef_poly = build_polyhedron_each_shell(shell_name);            
                 
-                std::string fcube = "/cube1.obj"; // used for miniskow_sum
+                //std::string fcube = "/cube1.obj"; // used for miniskow_sum
                 //Nef_polyhedron nef_poly_miniskow = miniskow_sum(fcube, nef_poly);
                 nef.nef_polyhedron_list.push_back(nef_poly);
             }
@@ -424,18 +423,7 @@ struct Shell_explorer {
     std::vector<std::vector<unsigned long>> faces;
 
     void visit(Nef_polyhedron::Vertex_const_handle v) {}
-    void visit(Nef_polyhedron::Halfedge_const_handle he) {
-        /*
-        Nef_polyhedron::Vertex_const_handle v_source = he->source();
-        Nef_polyhedron::Vertex_const_handle v_target = he->target();
-        std::cout << "source: ";
-        vertices.emplace_back(v_source->point());
-        //std::cout << "(" << v_source->point().x() << ", " << v_source->point().y() << ", " << v_source->point().z() << ")" << " ";
-        std::cout << "target: ";
-        //std::cout << "(" << v_target->point().x() << ", " << v_target->point().y() << ", " << v_target->point().z() << ")" << '\n';
-        vertices.emplace_back(v_target->point());
-        */
-    }
+    void visit(Nef_polyhedron::Halfedge_const_handle he) {}
     void visit(Nef_polyhedron::SHalfedge_const_handle she) {}
     void visit(Nef_polyhedron::SHalfloop_const_handle shl) {}
     void visit(Nef_polyhedron::SFace_const_handle sf) {}
@@ -458,7 +446,7 @@ struct Shell_explorer {
                 Point vpoint = svert->center_vertex()->point();
                 //std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
                 vertices.push_back(vpoint);
-                faces.back().push_back(index++);
+                faces.back().push_back(index++); 
             }
             //std::cout << '\n';
          
