@@ -103,33 +103,52 @@ int main()
 }
 
 
-/*
-* select the se which is needed to be written to cityjson
-* add non-repeated vertices to vertices list
-* add the correct indices of each face in each shell
-*
-* selected shell explorer:
-* shell_explorers[0] - exterior
-* shell_explorers[1] - room
-* shell_explorers[4] - room
-* shell_explorers[5] - room
-* shell_explorers[6] - room
-*/
-void process_shell_explorer_indices(
-	std::vector<Shell_explorer>& shell_explorers,
-	std::vector<Point>& vertices,
-	std::vector<Shell>& shells) 
-{
+class WriteToJSON {
+private:
 
-	int accumulated_index = 0;
-	for (auto& se : shell_explorers) {
-		for (auto& face : se.faces) {
-			for (auto& index : face) {
-				index = accumulated_index++;
+public:
+	/*
+	* select the se which is needed to be written to cityjson
+	* add non-repeated vertices to vertices list
+	* add the correct indices of each face in each shell
+	*
+	* selected shell explorer:
+	* shell_explorers[0] - exterior
+	* shell_explorers[1] - room
+	* shell_explorers[4] - room
+	* shell_explorers[5] - room
+	* shell_explorers[6] - room
+	*/
+	static void process_shell_explorer_indices(
+		std::vector<Shell_explorer>& shell_explorers,
+		std::vector<Point>& vertices,
+		std::vector<Shell>& shells)
+	{
+		// first store all the vertices in a vector
+		std::vector<Point> all_vertices; // contains repeated vertices
+		for (auto const& se : shell_explorers) {
+			for (auto& v : se.vertices) {
+				all_vertices.push_back(v);
 			}
 		}
+
+		// next store the face indexes(accumulated from 0)	
+		int accumulated_index = 0;
+		for (auto& se : shell_explorers) {
+			for (auto& face : se.faces) {
+				for (auto& index : face) {
+					index = accumulated_index++;
+				}
+			}
+		}
+		// now we have the all_vertices and shell_explorers to write to cityjson -----------------------------
+
+
+		// clear the repeated vertices, add them to vertices(param), add the selected shells to shells(param)
+
 	}
-}
+};
+
 
 
 void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
