@@ -52,50 +52,46 @@ int main()
 	
 	Nef nef;
 
-	// build Nef_polyhedra according to different shells
-	//Build_Nef_Polyhedron::build_nef_polyhedra(nef);
+	// build Nef_polyhedra according to different shells, add the nef polyhedra to nef list
+	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
 
 	// build big Nef
-	//BigNef::test_big(nef);
+	BigNef::test_big(nef);
 
-	// test miniskow
-	std::string fobj = "/16.obj";
-	std::string fcube = "/cube1.obj";
-	BigNef::test_miniskow(fobj, fcube, nef);
 	
 	// extract geometries ------------------------------------------------------------
-	//std::vector<Shell_explorer> shell_explorers;
-	//
-	//int volume_count = 0;
-	//int shell_count = 0;
-	//Nef_polyhedron::Volume_const_iterator current_volume;
-	//CGAL_forall_volumes(current_volume, nef.big_nef) {
-	//	std::cout << "volume: " << volume_count++ << " ";
-	//	std::cout << "volume mark: " << current_volume->mark() << '\n';
-	//	Nef_polyhedron::Shell_entry_const_iterator current_shell;
-	//	CGAL_forall_shells_of(current_shell, current_volume) {
-	//		Shell_explorer se;
-	//		Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
-	//		nef.big_nef.visit_shell_objects(sface_in_shell, se);
+	std::vector<Shell_explorer> shell_explorers;
+	
+	int volume_count = 0;
+	int shell_count = 0;
+	Nef_polyhedron::Volume_const_iterator current_volume;
+	CGAL_forall_volumes(current_volume, nef.big_nef) {
+		std::cout << "volume: " << volume_count++ << " ";
+		std::cout << "volume mark: " << current_volume->mark() << '\n';
+		Nef_polyhedron::Shell_entry_const_iterator current_shell;
+		CGAL_forall_shells_of(current_shell, current_volume) {
+			Shell_explorer se;
+			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
+			nef.big_nef.visit_shell_objects(sface_in_shell, se);
 
-	//		//add the se to shell_explorers
-	//		shell_explorers.push_back(se);
-	//	}
-	//}
+			//add the se to shell_explorers
+			shell_explorers.push_back(se);
+		}
+	}
 
-	////process the indices
-	//process_shell_explorer_indices(shell_explorers);
+	//process the indices
+	process_shell_explorer_indices(shell_explorers);
 
-	//std::cout << "after extracting geometries: " << '\n';
-	//std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
-	//std::cout << "-------------------------------" << '\n';
-	//for (auto& shell : shell_explorers) {
-	//	std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
-	//	std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
-	//	std::cout << '\n';
-	//}
+	std::cout << "after extracting geometries: " << '\n';
+	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
+	std::cout << "-------------------------------" << '\n';
+	for (auto& shell : shell_explorers) {
+		std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
+		std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
+		std::cout << '\n';
+	}
 
-	//write_to_json(shell_explorers);
+	write_to_json(shell_explorers);
 
 	return 0;
 }
