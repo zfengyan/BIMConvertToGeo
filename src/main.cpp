@@ -8,7 +8,7 @@
 void process_shell_explorer_indices(
 	std::vector<Shell_explorer>& shell_explorers,
 	std::vector<Point>& vertices,
-	std::vector<Shell>& result_shells);
+	std::vector<Shell>& shells);
 
 void write_to_json(std::vector<Shell_explorer>& shell_explorers);
 
@@ -84,8 +84,9 @@ int main()
 	}
 
 	//process the indices
-
-	//process_shell_explorer_indices(shell_explorers);
+	std::vector<Point> vertices;
+	std::vector<Shell> shells;
+	//process_shell_explorer_indices(shell_explorers, vertices, shells);
 
 	std::cout << "after extracting geometries: " << '\n';
 	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
@@ -95,14 +96,6 @@ int main()
 		std::cout << "faces size of this shell: " << shell.faces.size() << '\n';
 		std::cout << '\n';
 	}
-
-	std::cout << "shell test: " << '\n';
-	auto& shell_1 = shell_explorers[1];
-	auto& shell_3 = shell_explorers[3];
-	std::cout << "shell - 1: " << '\n';
-	for (auto& v : shell_1.vertices)std::cout << "v: " << v.x() << '\n';
-	std::cout << "shell - 3: " << '\n';
-	for (auto& v : shell_3.vertices)std::cout << "v: " << v.x() << '\n';
 
 	//write_to_json(shell_explorers);
 
@@ -125,7 +118,7 @@ int main()
 void process_shell_explorer_indices(
 	std::vector<Shell_explorer>& shell_explorers,
 	std::vector<Point>& vertices,
-	std::vector<Shell>& result_shells) 
+	std::vector<Shell>& shells) 
 {
 
 	int accumulated_index = 0;
@@ -174,14 +167,14 @@ void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["type"] = "Solid";
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["lod"] = "2.2";
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices	
-	auto& b_BuildingPart = json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"];
+	auto& b_BuildingPart = json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"][0];
 	auto const& se_exterior = shell_explorers[0];
 	for (auto& face : se_exterior.faces) {
 		std::vector<unsigned long> one_face;
 		for (auto& index : face) {
 			one_face.push_back(index);
 		}
-		b_BuildingPart.push_back({ { one_face } });
+		b_BuildingPart.push_back({one_face});
 		one_face.clear();
 	}
 
@@ -194,13 +187,13 @@ void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
 	json["CityObjects"]["Building_1_1"]["geometry"][0]["lod"] = "2.2";
 	json["CityObjects"]["Building_1_1"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices																								  // faces for BuildingRoom2
 	auto const& se_room2 = shell_explorers[9];
-	auto& b_BuildingRoom = json["CityObjects"]["Building_1_1"]["geometry"][0]["boundaries"];
+	auto& b_BuildingRoom = json["CityObjects"]["Building_1_1"]["geometry"][0]["boundaries"][0];
 	for (auto& face : se_room2.faces) {
 		std::vector<unsigned long> one_face;
 		for (auto& index : face) {
 			one_face.push_back(index);
 		}
-		b_BuildingRoom.push_back({ { one_face } });
+		b_BuildingRoom.push_back({one_face});
 		one_face.clear();
 	}
 
@@ -210,3 +203,4 @@ void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
 	out_stream << json_string;
 	out_stream.close();
 }
+
