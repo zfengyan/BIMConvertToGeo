@@ -5,7 +5,7 @@
 #include "Polyhedra.hpp"
 
 
-void process_shell_explorer_indices(Shell_explorer& se);
+void process_shell_explorer_indices(std::vector<Shell_explorer>& shell_explorers);
 void write_to_json(std::vector<Shell_explorer>& shell_explorers);
 
 
@@ -74,21 +74,20 @@ int main()
 		std::cout << "volume mark: " << current_volume->mark() << '\n';
 		Nef_polyhedron::Shell_entry_const_iterator current_shell;
 		CGAL_forall_shells_of(current_shell, current_volume) {
-			//std::cout << "shell: " << shell_count++ << '\n';
 			Shell_explorer se;
 			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
 			nef.big_nef.visit_shell_objects(sface_in_shell, se);
-			
-			//process the indices
-			process_shell_explorer_indices(se);
 
 			//add the se to shell_explorers
 			shell_explorers.push_back(se);
 		}
 	}
 
+	//process the indices
+	process_shell_explorer_indices(shell_explorers);
+
 	std::cout << "after extracting geometries: " << '\n';
-	std::cout << shell_explorers.size() << '\n';
+	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
 	std::cout << "-------------------------------" << '\n';
 	for (auto& shell : shell_explorers) {
 		std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
@@ -102,59 +101,80 @@ int main()
 }
 
 
-void process_shell_explorer_indices(Shell_explorer& se) {
+void process_shell_explorer_indices(std::vector<Shell_explorer>& shell_explorers) {
 	int accumulated_index = 0;
-	for (auto& face : se.faces) {
-		for (auto& index : face) {
-			index = accumulated_index++;
+	for (auto& se : shell_explorers) {
+		for (auto& face : se.faces) {
+			for (auto& index : face) {
+				index = accumulated_index++;
+			}
 		}
 	}
 }
 
 
 void write_to_json(std::vector<Shell_explorer>& shell_explorers) {
-	// basic info
+	// basic info ---------------------------------------------------------------
 	nlohmann::json json;
 	json["type"] = "CityJSON";
 	json["version"] = "1.1";
 	json["transform"] = nlohmann::json::object();
 	json["transform"]["scale"] = nlohmann::json::array({ 1.0, 1.0, 1.0 });
 	json["transform"]["translate"] = nlohmann::json::array({ 0.0, 0.0, 0.0 });
-	
-	// Building info
+	json["vertices"] = nlohmann::json::array({}); // vertices
+
+	// all vertices(including repeated vertices)-----------------------------------
+	for (auto const& se : shell_explorers) {
+		for (auto& v : se.vertices) {
+			double x = CGAL::to_double(v.x()); // warning: may have precision loss
+			double y = CGAL::to_double(v.y());
+			double z = CGAL::to_double(v.z());
+			json["vertices"].push_back({ x, y, z });
+		} // vertices may be repeated
+	}
+
+	// Building info -------------------------------------------------------------
 	json["CityObjects"] = nlohmann::json::object();
 	json["CityObjects"]["Building_1"]["type"] = "Building";
 	json["CityObjects"]["Building_1"]["attributes"] = nlohmann::json({});
-	json["CityObjects"]["Building_1"]["children"] = nlohmann::json::array({ "Building_1_0" });
+	json["CityObjects"]["Building_1"]["children"] = nlohmann::json::array({ "Building_1_0", "Building_1_1" });
 	json["CityObjects"]["Building_1"]["geometry"] = nlohmann::json::array({});
 
-	// BuildingPart - exterior?
+	// BuildingPart - exterior------------------------------------------------------
 	json["CityObjects"]["Building_1_0"]["type"] = "BuildingPart";
 	json["CityObjects"]["Building_1_0"]["attributes"] = nlohmann::json({});
 	json["CityObjects"]["Building_1_0"]["parents"] = nlohmann::json::array({"Building_1"});
 	json["CityObjects"]["Building_1_0"]["geometry"] = nlohmann::json::array();
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["type"] = "Solid";
 	json["CityObjects"]["Building_1_0"]["geometry"][0]["lod"] = "2.2";
-	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices
-	json["vertices"] = nlohmann::json::array({}); // vertices
-
-	auto const& se = shell_explorers[0];
-	for (auto& v : se.vertices) {
-		double x = CGAL::to_double(v.x()); // warning: may have precision loss
-		double y = CGAL::to_double(v.y());
-		double z = CGAL::to_double(v.z());
-		json["vertices"].push_back({ x, y, z });		
-	} // vertices may be repeated
-
-	int boundaries_index = 0;
-	std::vector<unsigned long> one_face;
-	auto& b = json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"];
-	for (auto& face : se.faces) {
+	json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices	
+	auto& b_BuildingPart = json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"];
+	auto const& se_exterior = shell_explorers[0];
+	for (auto& face : se_exterior.faces) {
 		std::vector<unsigned long> one_face;
 		for (auto& index : face) {
 			one_face.push_back(index);
 		}
-		b.push_back({ { one_face } });
+		b_BuildingPart.push_back({ { one_face } });
+		one_face.clear();
+	}
+
+	// BuildingRoom--------------------------------------------------------------------
+	json["CityObjects"]["Building_1_1"]["type"] = "BuildingRoom";
+	json["CityObjects"]["Building_1_1"]["attributes"] = nlohmann::json({});
+	json["CityObjects"]["Building_1_1"]["parents"] = nlohmann::json::array({ "Building_1" });
+	json["CityObjects"]["Building_1_1"]["geometry"] = nlohmann::json::array();
+	json["CityObjects"]["Building_1_1"]["geometry"][0]["type"] = "Solid";
+	json["CityObjects"]["Building_1_1"]["geometry"][0]["lod"] = "2.2";
+	json["CityObjects"]["Building_1_1"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices																								  // faces for BuildingRoom2
+	auto const& se_room2 = shell_explorers[9];
+	auto& b_BuildingRoom = json["CityObjects"]["Building_1_1"]["geometry"][0]["boundaries"];
+	for (auto& face : se_room2.faces) {
+		std::vector<unsigned long> one_face;
+		for (auto& index : face) {
+			one_face.push_back(index);
+		}
+		b_BuildingRoom.push_back({ { one_face } });
 		one_face.clear();
 	}
 

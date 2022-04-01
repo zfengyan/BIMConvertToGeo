@@ -279,23 +279,36 @@ public:
         std::cout << "-- reading 18.obj to 33.obj, use these shells' convex hull to build corresponding polyhedron" << '\n';
 
         // from 1.obj to 17.obj
-        /*for (int shell_id = 1; shell_id != 18; ++shell_id) {
-            std::string shell_str = std::to_string(shell_id);
-            std::string shell_name = prefix + shell_str + suffix_obj;
-            build_polyhedron_each_shell(shell_name, nef);
-        }*/
+        for (int shell_id = 1; shell_id != 18; ++shell_id) {
+            //if (shell_id == 5)continue;
+            if (shell_id == 2 || shell_id == 12 || shell_id == 3 || 
+                shell_id == 4  || shell_id == 14 || shell_id == 1) {
+                std::string shell_str = std::to_string(shell_id);
+                std::string shell_name = prefix + shell_str + suffix_obj;
+                build_convexhull(shell_name, nef);
+            }
+            else {
+                std::string shell_str = std::to_string(shell_id);
+                std::string shell_name = prefix + shell_str + suffix_obj;
+                build_polyhedron_each_shell(shell_name, nef);
+            }           
+        }
 
         // from 18.obj to 33.obj
-        /*for (int shell_id = 18; shell_id != 34; ++shell_id) {
+        for (int shell_id = 18; shell_id != 34; ++shell_id) {
+            if (shell_id == 21 || shell_id == 22 || shell_id == 19 || shell_id == 32 ||
+                shell_id == 23 || shell_id == 25 || shell_id == 26 || shell_id == 27 ||
+                shell_id == 28 || shell_id == 18 || shell_id == 33 || shell_id == 20 || shell_id == 24)continue;
+
             std::string shell_str = std::to_string(shell_id);
             std::string shell_name = prefix + shell_str + suffix_obj;
             build_convexhull(shell_name, nef);
-        }*/
+        }
 
         // test       
-        std::string shell_str1 = "cube1";
+        /*std::string shell_str1 = "cube1";
         std::string shell_name1 = prefix + shell_str1 + suffix_obj;
-        build_polyhedron_each_shell(shell_name1, nef);
+        build_polyhedron_each_shell(shell_name1, nef);*/
 
         /*std::string shell_str2 = "cube3";
         std::string shell_name2 = prefix + shell_str2 + suffix_obj;
@@ -331,11 +344,11 @@ class BigNef {
 public:
     static void test_big(Nef& nef) {
 		
-		/*for (auto& one_nef : nef.nef_polyhedron_list) {
+		for (auto& one_nef : nef.nef_polyhedron_list) {
             nef.big_nef += one_nef;
 		}
 		std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
-		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';*/
+		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
         
         /*
 		if (nef.big_nef.is_simple()) {
@@ -360,7 +373,7 @@ public:
         //nef.big_nef = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);           
         //nef.big_nef = (nef.nef_polyhedron_list[0] - nef.nef_polyhedron_list[1]); // * CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);
         
-        nef.big_nef = nef.nef_polyhedron_list[0];
+        //nef.big_nef = nef.nef_polyhedron_list[0];
         //std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
         //std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
 
@@ -418,12 +431,11 @@ struct Shell_explorer {
             {
                 Nef_polyhedron::SVertex_const_handle svert = hc_start->source();
                 Point vpoint = svert->center_vertex()->point();
-                std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
+                //std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
                 vertices.push_back(vpoint);
                 faces.back().push_back(index++);
             }
-            std::cout << '\n';
-
+            //std::cout << '\n';
          
         }
 
