@@ -780,7 +780,7 @@ public:
 				for (auto& v : shell.poly_vertices) {
 					myfile << "v" << " " << v.x << " " << v.y << " " << v.z << '\n';
 				}
-
+				
 				for (auto& face : shell.faces)
 				{
 					myfile << "f" << " ";

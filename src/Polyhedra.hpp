@@ -390,6 +390,15 @@ public:
         //os.close();
         
     }
+
+    
+    static void test_miniskow_big(Nef& nef) {
+        for (auto& one_nef : nef.nef_polyhedron_list) {
+            nef.big_nef = CGAL::minkowski_sum_3(nef.big_nef, one_nef);
+        }
+        std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
+        std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+    }
 };
 
 
