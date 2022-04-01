@@ -5,11 +5,6 @@
 #include "Polyhedra.hpp"
 
 
-void process_shell_explorer_indices(
-	std::vector<Shell_explorer>& shell_explorers,
-	std::vector<Point>& vertices,
-	std::vector<Shell>& shells);
-
 void write_to_json(std::vector<Shell_explorer>& shell_explorers);
 
 
@@ -103,8 +98,50 @@ int main()
 }
 
 
+// shells for writing to json 
+struct JShell {
+	std::vector<std::vector<unsigned long>> faces;
+};
+
+
 class WriteToJSON {
 private:
+	/*
+	* check if a vertex already exists in a vertices vector
+	* USE coordinates to compare whether two vertices are the same
+	* return: False - not exist, True - exist
+	*/
+	static bool vertex_exist_check(std::vector<Point>& vertices, Point& vertex) {
+		bool flag(false);
+		for (auto& v : vertices) {
+			if (
+				abs(vertex.x() - v.x()) < Epsilon &&
+				abs(vertex.y() - v.y()) < Epsilon &&
+				abs(vertex.z() - v.z()) < Epsilon) {
+
+				flag = true;
+			}
+		}
+		return flag;
+	}
+
+
+	/*
+	* if a vertex is repeated, find the index and return
+	*/
+	static unsigned long find_vertex(std::vector<Point>& vertices, Point& vertex) {
+		for (std::size_t i = 0; i != vertices.size(); ++i) {
+			if (
+				abs(vertex.x() - vertices[i].x()) < Epsilon &&
+				abs(vertex.y() - vertices[i].y()) < Epsilon &&
+				abs(vertex.z() - vertices[i].z()) < Epsilon) {
+
+				return (unsigned long)i;
+			}
+		}
+		std::cout << "warning: please check find_vertex function" << '\n';
+		return 0;
+	}
 
 public:
 	/*
@@ -122,22 +159,22 @@ public:
 	static void process_shell_explorer_indices(
 		std::vector<Shell_explorer>& shell_explorers,
 		std::vector<Point>& vertices,
-		std::vector<Shell>& shells)
+		std::vector<JShell>& jshells)
 	{
 		// first store all the vertices in a vector
 		std::vector<Point> all_vertices; // contains repeated vertices
 		for (auto const& se : shell_explorers) {
-			for (auto& v : se.vertices) {
+			for (auto const& v : se.vertices) {
 				all_vertices.push_back(v);
 			}
 		}
 
 		// next store the face indexes(accumulated from 0)	
-		int accumulated_index = 0;
+		unsigned long index_in_all_vertices = 0;
 		for (auto& se : shell_explorers) {
 			for (auto& face : se.faces) {
 				for (auto& index : face) {
-					index = accumulated_index++;
+					index = index_in_all_vertices++;
 				}
 			}
 		}
@@ -145,7 +182,27 @@ public:
 
 
 		// clear the repeated vertices, add them to vertices(param), add the selected shells to shells(param)
+		unsigned long index_in_vertices = 0;
 
+		// exterior ----------------------------------------
+		auto const& se_0 = shell_explorers[0];
+		JShell jshell_0; // corresponds to se_0
+		for (auto const& current_face : se_0.faces) {
+			jshell_0.faces.emplace_back();
+			for (auto const& current_index : current_face) {
+				Point& vertex = all_vertices[current_index];
+				if (!vertex_exist_check(vertices, vertex)) {
+					vertices.push_back(vertex);
+					jshell_0.faces.back().push_back(index_in_vertices++);
+				}
+				else {
+					unsigned long exist_vertex_index = find_vertex(vertices, vertex);
+					jshell_0.faces.back().push_back(exist_vertex_index);
+				}
+			}
+		}
+		jshells.push_back(jshell_0);
+		
 	}
 };
 
