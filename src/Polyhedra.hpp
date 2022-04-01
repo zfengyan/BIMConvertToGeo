@@ -392,12 +392,27 @@ public:
     }
 
     
-    static void test_miniskow_big(Nef& nef) {
-        for (auto& one_nef : nef.nef_polyhedron_list) {
-            nef.big_nef = CGAL::minkowski_sum_3(nef.big_nef, one_nef);
+    static void test_miniskow(std::string& fobj, std::string& fcube, Nef& nef) {
+        Build_Nef_Polyhedron::build_polyhedron_each_shell(fobj, nef);
+        Build_Nef_Polyhedron::build_polyhedron_each_shell(fcube, nef);
+        std::cout << "miniskow: " << nef.nef_polyhedron_list.size() << '\n';
+        Nef_polyhedron result = CGAL::minkowski_sum_3(nef.nef_polyhedron_list[0], nef.nef_polyhedron_list[1]);
+
+        if (result.is_simple()) {
+            Polyhedron p;
+            result.convert_to_polyhedron(p);
+
+            // output
+            std::string fname = fobj;
+            std::string suffix_off = ".off";
+            std::string outputname = fname + suffix_off;
+            std::string path = INTER_PATH;
+            std::string outputfile = path + outputname;
+            std::ofstream os(outputfile);
+            os << p;
+            os.close();
         }
-        std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
-        std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+        
     }
 };
 

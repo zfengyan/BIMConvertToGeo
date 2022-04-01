@@ -12,89 +12,90 @@ void write_to_json(std::vector<Shell_explorer>& shell_explorers);
 int main()
 {
 	//std::cout << "Hello CMake." << '\n';
-	std::cout << "-- activated data folder: " << DATA_PATH << '\n';
+	//std::cout << "-- activated data folder: " << DATA_PATH << '\n';
 
-	OBJFile f; // organize vertcies, faces, shells and objects
-	
-	std::cout << '\n';
-	std::string fname = "/KIT.obj";
-	LoadOBJ::load_obj(fname, f);
+	//OBJFile f; // organize vertcies, faces, shells and objects
+	//
+	//std::cout << '\n';
+	//std::string fname = "/KIT.obj";
+	//LoadOBJ::load_obj(fname, f);
 
-	std::cout << '\n';
-	std::string repeated_info_name = "/KIT.repeated.vertices.txt";
-	LoadOBJ::repeated_vertices_info(repeated_info_name, f);
+	//std::cout << '\n';
+	//std::string repeated_info_name = "/KIT.repeated.vertices.txt";
+	//LoadOBJ::repeated_vertices_info(repeated_info_name, f);
 
-	std::cout << '\n';
-	std::string repeated_faces_name = "/KIT.repeated.faces.txt";
-	LoadOBJ::repeated_faces_info(repeated_faces_name, f);
+	//std::cout << '\n';
+	//std::string repeated_faces_name = "/KIT.repeated.faces.txt";
+	//LoadOBJ::repeated_faces_info(repeated_faces_name, f);
 
-	std::cout << '\n';
-	std::string new_vertices_name = "/KIT.new.vertices.txt";
-	LoadOBJ::process_repeated_vertices(new_vertices_name, f);
+	//std::cout << '\n';
+	//std::string new_vertices_name = "/KIT.new.vertices.txt";
+	//LoadOBJ::process_repeated_vertices(new_vertices_name, f);
 
-	std::cout << '\n';
-	std::string new_faces_name = "/KIT.new.faces.txt";
-	LoadOBJ::process_repeated_faces(new_faces_name, f);
+	//std::cout << '\n';
+	//std::string new_faces_name = "/KIT.new.faces.txt";
+	//LoadOBJ::process_repeated_faces(new_faces_name, f);
 
-	std::cout << '\n';
-	std::string output_obj_name = "/KIT.output.obj";
-	LoadOBJ::output_obj(output_obj_name, f);
+	//std::cout << '\n';
+	//std::string output_obj_name = "/KIT.output.obj";
+	//LoadOBJ::output_obj(output_obj_name, f);
 
-	/* 
-	* prepare the verticesand face - indices for each shell
-	* shell.poly_vertices -- store the vertices of this shell
-	* shell.faces -> face.v_poly_indices -- store the indices(0-based) point to the shell.poly_vertices 
-	*/
-	PreparePolyhedron::prepare_poly_vertices_face_indices(f); // uncomment this to output each shell
-	PreparePolyhedron::output_each_shell(f); // uncomment this to output each shell
+	///* 
+	//* prepare the verticesand face - indices for each shell
+	//* shell.poly_vertices -- store the vertices of this shell
+	//* shell.faces -> face.v_poly_indices -- store the indices(0-based) point to the shell.poly_vertices 
+	//*/
+	//PreparePolyhedron::prepare_poly_vertices_face_indices(f); // uncomment this to output each shell
+	//PreparePolyhedron::output_each_shell(f); // uncomment this to output each shell
 
-	std::cout << '\n';
+	//std::cout << '\n';
 	
 	Nef nef;
 
-	//process not closed part -- 16.obj
-
-
 	// build Nef_polyhedra according to different shells
-	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
+	//Build_Nef_Polyhedron::build_nef_polyhedra(nef);
 
 	// build big Nef
-	BigNef::test_big(nef);
-	//BigNef::test_miniskow_big(nef);
+	//BigNef::test_big(nef);
+
+	// test miniskow
+	std::string fobj = "/16.obj";
+	std::string fcube = "/cube1.obj";
+	BigNef::test_miniskow(fobj, fcube, nef);
 	
 	// extract geometries ------------------------------------------------------------
-	std::vector<Shell_explorer> shell_explorers;
-	
-	int volume_count = 0;
-	int shell_count = 0;
-	Nef_polyhedron::Volume_const_iterator current_volume;
-	CGAL_forall_volumes(current_volume, nef.big_nef) {
-		std::cout << "volume: " << volume_count++ << " ";
-		std::cout << "volume mark: " << current_volume->mark() << '\n';
-		Nef_polyhedron::Shell_entry_const_iterator current_shell;
-		CGAL_forall_shells_of(current_shell, current_volume) {
-			Shell_explorer se;
-			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
-			nef.big_nef.visit_shell_objects(sface_in_shell, se);
+	//std::vector<Shell_explorer> shell_explorers;
+	//
+	//int volume_count = 0;
+	//int shell_count = 0;
+	//Nef_polyhedron::Volume_const_iterator current_volume;
+	//CGAL_forall_volumes(current_volume, nef.big_nef) {
+	//	std::cout << "volume: " << volume_count++ << " ";
+	//	std::cout << "volume mark: " << current_volume->mark() << '\n';
+	//	Nef_polyhedron::Shell_entry_const_iterator current_shell;
+	//	CGAL_forall_shells_of(current_shell, current_volume) {
+	//		Shell_explorer se;
+	//		Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
+	//		nef.big_nef.visit_shell_objects(sface_in_shell, se);
 
-			//add the se to shell_explorers
-			shell_explorers.push_back(se);
-		}
-	}
+	//		//add the se to shell_explorers
+	//		shell_explorers.push_back(se);
+	//	}
+	//}
 
-	//process the indices
-	process_shell_explorer_indices(shell_explorers);
+	////process the indices
+	//process_shell_explorer_indices(shell_explorers);
 
-	std::cout << "after extracting geometries: " << '\n';
-	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
-	std::cout << "-------------------------------" << '\n';
-	for (auto& shell : shell_explorers) {
-		std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
-		std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
-		std::cout << '\n';
-	}
+	//std::cout << "after extracting geometries: " << '\n';
+	//std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
+	//std::cout << "-------------------------------" << '\n';
+	//for (auto& shell : shell_explorers) {
+	//	std::cout << "vertices size of this shell: " << shell.vertices.size() << '\n';
+	//	std::cout << "half facets size of this shell: " << shell.faces.size() << '\n';
+	//	std::cout << '\n';
+	//}
 
-	write_to_json(shell_explorers);
+	//write_to_json(shell_explorers);
 
 	return 0;
 }
