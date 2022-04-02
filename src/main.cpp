@@ -28,9 +28,9 @@ private:
 		bool flag(false);
 		for (auto& v : vertices) {
 			if (
-				abs(vertex.x() - v.x()) < Epsilon &&
-				abs(vertex.y() - v.y()) < Epsilon &&
-				abs(vertex.z() - v.z()) < Epsilon) {
+				abs(CGAL::to_double(vertex.x()) - CGAL::to_double(v.x())) < Epsilon &&
+				abs(CGAL::to_double(vertex.y()) - CGAL::to_double(v.y())) < Epsilon &&
+				abs(CGAL::to_double(vertex.z()) - CGAL::to_double(v.z())) < Epsilon) {
 
 				flag = true;
 			}
@@ -45,9 +45,9 @@ private:
 	unsigned long find_vertex(std::vector<Point>& vertices, Point& vertex) {
 		for (std::size_t i = 0; i != vertices.size(); ++i) {
 			if (
-				abs(vertex.x() - vertices[i].x()) < Epsilon &&
-				abs(vertex.y() - vertices[i].y()) < Epsilon &&
-				abs(vertex.z() - vertices[i].z()) < Epsilon) {
+				abs(CGAL::to_double(vertex.x()) - CGAL::to_double(vertices[i].x())) < Epsilon &&
+				abs(CGAL::to_double(vertex.y()) - CGAL::to_double(vertices[i].y())) < Epsilon &&
+				abs(CGAL::to_double(vertex.z()) - CGAL::to_double(vertices[i].z())) < Epsilon) {
 
 				return (unsigned long)i;
 			}
@@ -333,11 +333,6 @@ public:
 		out_stream << json_string;
 		out_stream.close();
 
-		std::cout << "errors: " << '\n';
-		std::cout << vertices[10].x() << " " << " " << vertices[10].y() << " " << vertices[10].z() << '\n';
-		std::cout << vertices[13].x() << " " << " " << vertices[13].y() << " " << vertices[13].z() << '\n';
-		std::cout << vertices[17].x() << " " << " " << vertices[17].y() << " " << vertices[17].z() << '\n';
-		std::cout << vertices[20].x() << " " << " " << vertices[20].y() << " " << vertices[20].z() << '\n';
 	}
 
 
