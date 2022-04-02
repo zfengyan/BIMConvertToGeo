@@ -26,7 +26,7 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
     Polyhedron_builder() {}
     void operator()(HDS& hds) {
         CGAL::Polyhedron_incremental_builder_3<HDS> builder(hds, true);
-        std::cout << "-- building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
+        std::cout << "building surface with " << vertices.size() << " vertices and " << faces.size() << " faces" << '\n';
 
         builder.begin_surface(vertices.size(), faces.size());
         for (auto const& vertex : vertices) builder.add_vertex(vertex);
