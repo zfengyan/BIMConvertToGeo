@@ -263,13 +263,30 @@ public:
 			b_BuildingPart.push_back({ face });
 		}
 		auto semantics = nlohmann::json::array({}); // add corresponding index(int or null) of semantics
-		for (auto const& surface_type : jshell_exterior.semantics) {
+		for (std::size_t i = 0; i != jshell_exterior.faces.size(); ++i) {
+			if (i == 0 || i == 1 || i == 2 || i == 3 || i == 4 ||
+				i == 5 || i == 6 || i == 7 || i == 8 ||
+				i == 9 || i == 10 || i == 11 || i == 12 ||
+				i == 13 || i == 15 || i == 17 || i == 18 ||
+				i == 20)semantics.push_back(1); // WallSurfaces
+			else if (i == 14) {
+				semantics.push_back(0); // GroundSurface
+			}
+			else if(i == 25 || i == 26){
+				semantics.push_back(2); // RoofSurfaces
+			}
+			else{
+				semantics.push_back(nullptr); // Surfaces with no defined types
+			}
+		}
+		sem["values"].push_back(semantics); // add the json array to semantics - values
+		/*for (auto const& surface_type : jshell_exterior.semantics) {
 			if (surface_type == "GroundSurface")semantics.push_back(0);
 			else if (surface_type == "WallSurface")semantics.push_back(1);
 			else if (surface_type == "RoofSurface")semantics.push_back(2);
 			else if (surface_type == "null")semantics.push_back(nullptr);
-		}
-		sem["values"].push_back(semantics); // add the json array to semantics - values
+		}*/
+		
 
 		// BuildingRoom 1 - shell_explorers[3] -------------------------------------------
 		json["CityObjects"]["Building_1_1"]["type"] = "BuildingRoom";
