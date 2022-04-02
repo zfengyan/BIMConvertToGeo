@@ -247,6 +247,50 @@
             ]
           ],
           "lod": "2.2",
+          "semantics": {
+            "surfaces": [
+              {
+                "type": "GroundSurface"
+              },
+              {
+                "type": "WallSurface"
+              },
+              {
+                "type": "RoofSurface"
+              }
+            ],
+            "values": [
+              [
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            ]
+          },
           "type": "Solid"
         }
       ],

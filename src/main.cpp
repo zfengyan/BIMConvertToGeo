@@ -9,12 +9,13 @@
 // shells for writing to json 
 struct JShell {
 	std::vector<std::vector<unsigned long>> faces;
+	std::vector<std::string> semantics; // semantic for each face in jshells[0] - exterior shell
 };
 
 
 
 class WriteToJSON {
-public:
+private:
 	std::vector<Point> vertices; // vertices for writing to city json file
 	std::vector<JShell> jshells; // selected shells for writing to city json file
 private:
@@ -55,6 +56,19 @@ private:
 		return 0;
 	}
 
+
+	/*
+	* get the semantics of a face in jshells[0] - exterior
+	*/
+	std::string get_semantics_for_face_in_exterior(std::vector<unsigned long>& face) {
+		if (face.empty()) {
+			std::cout << "no semantics for the face, please check" << '\n';
+			return "null";
+		}
+
+		return "null";
+
+	}
 public:
 	/*
 	* select the se which is needed to be written to cityjson
@@ -109,6 +123,10 @@ public:
 					jshell_0.faces.back().push_back(exist_vertex_index);
 				}
 			}
+
+			//semantics -- only for BuildingPart's geomery
+			jshell_0.semantics.emplace_back(); //one semantic for each face
+			jshell_0.semantics.back() = get_semantics_for_face_in_exterior(jshell_0.faces.back());
 		}
 		jshells.push_back(jshell_0);
 
@@ -228,11 +246,30 @@ public:
 		json["CityObjects"]["Building_1_0"]["geometry"][0]["type"] = "Solid";
 		json["CityObjects"]["Building_1_0"]["geometry"][0]["lod"] = "2.2";
 		json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"] = nlohmann::json::array({}); // indices	
+		
+		//semantics for BuildingPart geometry
+		auto& g = json["CityObjects"]["Building_1_0"]["geometry"];
+		g[0]["semantics"] = nlohmann::json({});
+		auto& sem = g[0]["semantics"];
+		sem["surfaces"][0]["type"] = "GroundSurface";
+		sem["surfaces"][1]["type"] = "WallSurface";
+		sem["surfaces"][2]["type"] = "RoofSurface";
+		sem["values"] = nlohmann::json::array({});
+
+		//boundaries and semantics(each face) for BuildingPart geometry
 		auto& b_BuildingPart = json["CityObjects"]["Building_1_0"]["geometry"][0]["boundaries"][0];
 		auto const& jshell_exterior = jshells[0];
 		for (auto const& face : jshell_exterior.faces) {
 			b_BuildingPart.push_back({ face });
 		}
+		auto semantics = nlohmann::json::array({}); // add corresponding index(int or null) of semantics
+		for (auto const& surface_type : jshell_exterior.semantics) {
+			if (surface_type == "GroundSurface")semantics.push_back(0);
+			else if (surface_type == "WallSurface")semantics.push_back(1);
+			else if (surface_type == "RoofSurface")semantics.push_back(2);
+			else if (surface_type == "null")semantics.push_back(nullptr);
+		}
+		sem["values"].push_back(semantics); // add the json array to semantics - values
 
 		// BuildingRoom 1 - shell_explorers[3] -------------------------------------------
 		json["CityObjects"]["Building_1_1"]["type"] = "BuildingRoom";
@@ -296,6 +333,8 @@ public:
 		out_stream << json_string;
 		out_stream.close();
 	}
+
+
 };
 
 
