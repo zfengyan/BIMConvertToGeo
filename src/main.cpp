@@ -332,6 +332,12 @@ public:
 		std::ofstream out_stream(OUTPUT_PATH + fname);
 		out_stream << json_string;
 		out_stream.close();
+
+		std::cout << "errors: " << '\n';
+		std::cout << vertices[10].x() << " " << " " << vertices[10].y() << " " << vertices[10].z() << '\n';
+		std::cout << vertices[13].x() << " " << " " << vertices[13].y() << " " << vertices[13].z() << '\n';
+		std::cout << vertices[17].x() << " " << " " << vertices[17].y() << " " << vertices[17].z() << '\n';
+		std::cout << vertices[20].x() << " " << " " << vertices[20].y() << " " << vertices[20].z() << '\n';
 	}
 
 
