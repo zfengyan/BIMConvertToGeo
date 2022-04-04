@@ -265,8 +265,8 @@ public:
         std::string prefix = "/";
         std::string suffix_obj = ".obj";
      
-        std::cout << "-- reading 1.obj to 17.obj, these shells can be passed to polyhedron builder" << '\n';
-        std::cout << "-- reading 18.obj to 33.obj, use these shells' convex hull to build corresponding polyhedron" << '\n';
+        //std::cout << "-- reading 1.obj to 17.obj, these shells can be passed to polyhedron builder" << '\n';
+        //std::cout << "-- reading 18.obj to 33.obj, use these shells' convex hull to build corresponding polyhedron" << '\n';
 
         // from 1.obj to 17.obj
         for (int shell_id = 1; shell_id != 18; ++shell_id) {
@@ -408,8 +408,8 @@ public:
 		for (auto& one_nef : nef.nef_polyhedron_list) {
             nef.big_nef += one_nef;
 		}
-		std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
-		std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
+		//std::cout << "is simple: " << nef.big_nef.is_simple() << '\n';
+		//std::cout << "num of vertices of the Nef after operation: " << nef.big_nef.number_of_vertices() << '\n';
         
     }
 
