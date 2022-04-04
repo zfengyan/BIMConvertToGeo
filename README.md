@@ -9,6 +9,14 @@ This project can be cloned at: https://github.com/SEUZFY/BIMConvertToGeo.git.
 
 Compile and run it directly, no extra parameters are needed.
 
+This program has been successfully run on a `x64 - windows 10 @Intel core` platform, specific settings are available [here](https://github.com/SEUZFY/BIMConvertToGeo/blob/master/CMakeSettings.json).
+
+**NB** : 
+
+* Before you compile this program, please make sure that you have the [dependencies](https://github.com/SEUZFY/BIMConvertToGeo#dependencies).
+
+* If the compilation fails, you might want to check the [CMakeLists.txt](https://github.com/SEUZFY/BIMConvertToGeo/blob/master/CMakeLists.txt) file.
+
 # Basic Info
 `data` : All input and output files.
 
