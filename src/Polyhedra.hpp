@@ -163,6 +163,10 @@ public:
             return nef_poly;
         }
 
+        // if errors happen in constructing the nef polyhedron
+        std::cout << "warning: please check the build_convexhull function" << '\n';
+        Nef_polyhedron N0(Nef_polyhedron::EMPTY);
+        return N0;
     }
 
 
@@ -243,14 +247,19 @@ public:
 
         } // end while: each line in the file
 
-        // construct polyhedron and add it to nef ------------------------------------------------------------------
+        // construct polyhedron and return ------------------------------------------------------------------
         Polyhedron polyhedron;
         polyhedron.delegate(polyhedron_builder);
         if (polyhedron.is_closed()) {
             Nef_polyhedron nef_poly(polyhedron);
             return nef_poly;
         }
-       
+        
+        // if errors happen in constructing the nef polyhedron
+        std::cout << "warning: please check the build_polyhedron_each_shell function" << '\n';
+        Nef_polyhedron N0(Nef_polyhedron::EMPTY);
+        return N0;
+
     }
 
 
