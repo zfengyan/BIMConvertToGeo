@@ -641,7 +641,7 @@ public:
 	static void output_obj(std::string& fname, OBJFile& f) {
 		std::string path = INTER_PATH;
 		std::string filename = path + fname;
-		std::cout << "-- output obj file: " << '\n';
+		std::cout << "output obj file: " << '\n';
 
 		std::ofstream myfile;
 		myfile.open(filename);

@@ -403,8 +403,8 @@ int main()
 	
 	Nef nef;
 
-	// build Nef_polyhedra according to different shells, add the nef polyhedra to nef list
-	Build_Nef_Polyhedron::build_nef_polyhedra(nef);
+	std::cout << "building nef polyhedra..." << '\n';
+	Build_Nef_Polyhedron::build_nef_polyhedra(nef); // build Nef_polyhedra according to different shells, add the nef polyhedra to nef list
 
 	// build big Nef
 	BigNef::test_big(nef);
