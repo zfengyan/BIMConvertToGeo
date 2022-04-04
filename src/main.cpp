@@ -442,7 +442,7 @@ int main()
 
 
 	//process the indices and write to json file----------------------------------------
-	std::string filename = "/mybuilding_e.json";
+	std::string filename = "/mybuilding.city.json";
 	WriteToJSON w;
 	w.process_shell_explorer_indices(shell_explorers);
 	w.write_vertices_shells(filename);
