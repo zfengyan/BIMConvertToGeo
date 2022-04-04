@@ -38,7 +38,7 @@ Visualized in [ninja](https://ninja.cityjson.org/).
 
 # Special Thanks
 
-Ken Arroyo Ohori - k.ohori@tudelft.nl
+Ken Arroyo Ohori - k.ohori@tudelft.nl --> [more info](https://3d.bk.tudelft.nl/ken/en/)
 
 Ken's kindly given [guidance](https://3d.bk.tudelft.nl/courses/geo1004//hw/3/) helps us to develop our code and our questions are always answered quickly and accurately, without which this project would not have been possible to be delivered.
 
@@ -47,7 +47,7 @@ Ken's kindly given [guidance](https://3d.bk.tudelft.nl/courses/geo1004//hw/3/) h
 
 Yitong  - xiayitong0630@gmail.com
 
-As for reading input OBJ file and build convex hulls directly, please refer to: Yitong - https://github.com/YitongXia/BIM_processing.git
+As for reading input OBJ file and build convex hulls directly, please refer to: https://github.com/YitongXia/BIM_processing.git
 
 Fengyan - zmocheng@gmail.com
 
